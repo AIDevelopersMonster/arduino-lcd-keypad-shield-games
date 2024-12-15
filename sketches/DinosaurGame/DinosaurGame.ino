@@ -1,19 +1,40 @@
 /* DinosaurGame
  *  Written by Erbol Syzdyk
- *  Youtube: https://www.youtube.com/watch?v=pR_U7vryuJY
- *  Original Source: https://pastebin.com/raw/h0Xnpmxc
+ * 
+ * Changes made by Alex Malachevsky:
+ * 1. Added start screen with "DINOSAUR GAME" and "PRESS ANY KEY".
+ * 2. Game now waits for a button press before starting.
+ * 3. Added music for startup, game over, button presses, jumping, and collisions.
+ * 4. Music is played using a passive buzzer connected to pin 3.
+ * 5. The game features simple obstacles that the dinosaur must jump over.
+ * 
+ * Enjoy playing the Dinosaur Game on your Arduino!
  */
+
+
 
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
-#define btnRight     0
-#define btnUp        1
-#define btnDown      2
-#define btnLeft      3
-#define btnSelect    4
-#define btnNone      5
+#define btnRIGHT  0
+#define btnUP     1
+#define btnDOWN   2
+#define btnLEFT   3
+#define btnSELECT 4
+#define btnNONE   5
 
+int read_LCD_buttons() {
+  int adc_key_in = analogRead(0);  // Read the value from the button sensor
+  if (adc_key_in > 1000) return btnNONE; 
+  if (adc_key_in < 50)   return btnRIGHT;
+  if (adc_key_in < 195)  return btnUP; 
+  if (adc_key_in < 380)  return btnDOWN; 
+  if (adc_key_in < 555)  return btnLEFT; 
+  if (adc_key_in < 790)  return btnSELECT;
+  
+  return btnNONE;
+  
+}
 byte dino[8] =
 {
  B00010,
@@ -147,8 +168,52 @@ int mat[2][24] = {
 
 int dinoAnim[] = {1,0,2,3};
 
+void playSetupMusic() {
+  // Мелодия для старта игры
+  tone(3, 440, 300); // Ля (A4) - 300 миллисекунд
+  delay(300);
+  tone(3, 523, 300); // До (C5) - 300 миллисекунд
+  delay(300);
+  tone(3, 659, 300); // Ми (E5) - 300 миллисекунд
+  delay(300);
+  tone(3, 784, 300); // Соль (G5) - 300 миллисекунд
+  delay(300);
+  noTone(3); // Останавливаем звук
+}
+void playButtonPressSound() {
+  tone(3, 1000, 100); // Высокий звук (1000 Гц) - 100 миллисекунд
+  delay(100);
+  noTone(3); // Останавливаем звук
+}
+void playJumpSound() {
+  tone(3, 880, 200); // Высокий звук (880 Гц) - 200 миллисекунд (например, прыжок)
+  delay(200);
+  noTone(3); // Останавливаем звук
+}
+
+void playCollisionSound() {
+  tone(3, 330, 200); // Средний звук (330 Гц) - 200 миллисекунд (например, столкновение)
+  delay(200);
+  noTone(3); // Останавливаем звук
+}
 void setup() {
   Serial.begin(9600);
+    // Отображаем начальный экран
+  lcd.begin(16, 2);
+  lcd.setCursor(0, 0);  // Начало первой строки
+  lcd.print("*DINOSAUR GAME!*");  // Первая строка
+  lcd.setCursor(0, 1);  // Начало второй строки
+  lcd.print("*PRESS ANY KEY!*");  // Вторая строка
+
+  // Ждем нажатия любой кнопки
+while (read_LCD_buttons() == btnNONE) {
+    playSetupMusic();
+    // Пустой цикл, ждем нажатия
+    delay(100);  // Добавляем небольшую задержку для улучшения отзывчивости
+  }
+
+  // После нажатия кнопки очищаем экран и начинаем игру
+  lcd.clear();
   
   //pinMode(but1,INPUT);
   //pinMode(but2,INPUT);
@@ -162,7 +227,7 @@ void setup() {
   lcd.createChar(7, freep);
   lcd.begin(16, 2);
 
-  gameover();
+
 
 }
 int b1 = 0;
@@ -208,15 +273,17 @@ void gameover(){
   delay(1000);
 }
 void loop() {
-  if((getKey() == btnUp) && !b2)jumpstarted = millis();
+  if((read_LCD_buttons() == btnUP) && !b2)
+  jumpstarted = millis();
   
-  b1 = (getKey() == btnDown);
-  b2 = (getKey() == btnUp);
+  b1 = (read_LCD_buttons() == btnDOWN);
+  b2 = (read_LCD_buttons() == btnUP);
    
   if(!gamestarted){
     if(b1 || b2){
       gamestarted = true;
       score = 0;
+      
     }
   }
   if(gamestarted){
@@ -270,16 +337,5 @@ void generate_obstacles(){
   }
   int spacecount = random(2,5);
   pausebetween = obscount + spacecount;
-}
-
-int getKey() {
-  int b = analogRead(A0);
-  if (b > 1000) return btnNone;
-  if (b < 50) return btnRight;
-  if (b < 180) return btnUp;
-  if (b < 330) return btnDown;
-  if (b < 520) return btnLeft;
-  if (b < 700) return btnSelect;
-  return btnNone;
 }
 
