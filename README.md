@@ -6,7 +6,7 @@
 
 Most of these games were modified to work with the LCD Keypad Shield.
 
-You will find the code in the [sketches](/sketches/) directory.
+You will find the code in the sketches directory.
 
 The links to the original projects are included below.
 
