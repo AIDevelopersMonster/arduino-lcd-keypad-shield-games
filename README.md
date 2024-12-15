@@ -61,7 +61,7 @@ In the text below, I will highlight the digits that I want to flip. You will see
 
 ## 8. [Pac-Man](sketches/Pacman/)
 * Author: Jean Malha
-* URL: [http://forum.snootlab.com/viewtopic.php?f=34&t=207](http://forum.snootlab.com/viewtopic.php?f=34&t=207)
+* URL: 
 * Youtube: 
 
 
