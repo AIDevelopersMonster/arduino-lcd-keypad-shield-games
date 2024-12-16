@@ -33,5 +33,5 @@
 2. Скачайте и установите библиотеку `LiquidCrystal` для работы с LCD экраном.
 3. Скачайте исходный код проекта и загрузите его на вашу плату Arduino.
 
-```bash
-git clone https://github.com/AIDevelopersMonster/Arduino-arkanoid-game.git
+
+
