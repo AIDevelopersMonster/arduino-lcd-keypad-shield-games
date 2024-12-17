@@ -29,8 +29,9 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 #define btnSELECT 4
 #define btnNONE   5
 
-#define MUSIC_PIN 3
+#define speakerPin 3
 
+bool triggerMode = true;  // false - High Trigger(npn), true - Low Trigger(pnp)
 // Constants for music timing
 int bpm = 30;
 const int whole = (60000 / bpm);
@@ -129,7 +130,7 @@ void handlecollisions() {
   // Handle Y-axis collisions
   if (yball > 15 || yball < 1) {
     vbally = -vbally;
-    tone(MUSIC_PIN, 880, eight);
+    tone(speakerPin, 880, eight);
   }
 
   // Handle X-axis collisions with walls
@@ -138,8 +139,10 @@ void handlecollisions() {
       if (xball > (70 + 2 * (i % 2) + 5 * (i / 8))) {
         if ((yball > (2 * (i % 8))) && (yball < (2 * (i % 8) + 4))) {
           if (wallarray[i] == 1) {
-            tone(MUSIC_PIN, 1174, eight);
+            tone(speakerPin, 1174, eight);
             delay(eight);
+            noTone(speakerPin);
+            digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
             wallarray[i] = 0;
             vballx = -vballx;
             xball = 70;
@@ -152,15 +155,20 @@ void handlecollisions() {
   // Check for screen boundaries
   if (xball > xmax) {
     vballx = -vballx;
-    tone(MUSIC_PIN, 880, eight);
+    tone(speakerPin, 880, eight);
   }
 
   // Ball and paddle collision
   if (xball < 1) {
     if (paddle_pos > int(yball) - 2 && paddle_pos < int(yball) + 2) {
-      tone(MUSIC_PIN, 1397, sixteenth);
+      tone(speakerPin, 1397, sixteenth);
+      noTone(speakerPin);
+      digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
       delay(sixteenth);
-      tone(MUSIC_PIN, 1567, eight);
+      tone(speakerPin, 1567, eight);
+      delay(eight);
+      noTone(speakerPin);
+      digitalWrite(speakerPin, triggerMode ? HIGH : LOW); 
       vballx = -vballx;
       vbally *= random(1, 4);
       vbally /= 2;
@@ -198,10 +206,10 @@ void gameOver() {
   lcd.print("Score: ");
   lcd.print(score);
   
-  tone(MUSIC_PIN, 440, whole);
+  tone(speakerPin, 440, whole);
   delay(whole);
-  noTone(MUSIC_PIN);
-
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
   delay(2000); // Show "Game Over" for 2 seconds
 
   // Reset game state
@@ -223,29 +231,34 @@ void gameOver() {
 
 // Play song (used for winning and some actions)
 void arkanoidsong() {
-  tone(MUSIC_PIN, 1568, eight); // g6
+  tone(speakerPin, 1568, eight); // g6
   delay(eight);
-  noTone(MUSIC_PIN);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
   delay(sixteenth);
-  tone(MUSIC_PIN, 1568, sixteenth); // g6
+  tone(speakerPin, 1568, sixteenth); // g6
   delay(sixteenth);
-  tone(MUSIC_PIN, 1864, half); // a#6
+  tone(speakerPin, 1864, half); // a#6
   delay(half);
-  noTone(MUSIC_PIN);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
   delay(thirty2);
-  tone(MUSIC_PIN, 1760, eight); // a6
+  tone(speakerPin, 1760, eight); // a6
   delay(eight);
-  tone(MUSIC_PIN, 1568, eight); // g6
+  tone(speakerPin, 1568, eight); // g6
   delay(eight);
-  tone(MUSIC_PIN, 1396, eight); // f6
+  tone(speakerPin, 1396, eight); // f6
   delay(eight);
-  tone(MUSIC_PIN, 1760, eight); // a6
+  tone(speakerPin, 1760, eight); // a6
   delay(eight);
-  tone(MUSIC_PIN, 1568, half);
+  tone(speakerPin, 1568, half);
   delay(half);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
 }
 
 void setup() {
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
   lcd.begin(16, 2);
   delay(100);
   lcd.clear();
