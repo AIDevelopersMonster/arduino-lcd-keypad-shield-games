@@ -26,7 +26,6 @@
   [www.kontakts.ru](http://www.kontakts.ru)
 
 */
-
 #include <EEPROM.h>
 #include <LiquidCrystal.h>
 
@@ -62,7 +61,14 @@ class Animation {
       return _frames[_current_frame];
     }
 };
-
+// Constants for music timing
+int bpm = 30;
+const int whole = (60000 / bpm);
+const int half = 30000 / bpm;
+const int quarter = 15000 / bpm;
+const int eight = 7500 / bpm;
+const int sixteenth = 3750 / bpm;
+const int thirty2 = 1875 / bpm;
 // Constants for identifying each sprite
 const byte SPRITE_TAIL0 = 0;
 const byte SPRITE_TAIL1 = 1;
@@ -103,8 +109,12 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 // Button pin constants
 //const int button = 2;
 
-//Speaker pin contstant
-const int speaker = 3;
+//speakerPin pin contstant
+const int speakerPin = 3;
+bool triggerMode = true;  // false - High Trigger(npn), true - Low Trigger(pnp)
+
+
+
 
 // Some game constants that can be adjusted to control difficulty
 const unsigned long frame_rate = 125;
@@ -142,11 +152,49 @@ unsigned long wall_advance_next = 0;
 // Death animation and flash times
 unsigned long death_rate = 150;
 unsigned long death_hold = 1500;
+// Play song (used for winning and some actions)
+void song() {
+  tone(speakerPin, 1568, eight); // g6
+  delay(eight);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
+  delay(sixteenth);
+  tone(speakerPin, 1568, sixteenth); // g6
+  delay(sixteenth);
+  tone(speakerPin, 1864, half); // a#6
+  delay(half);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
+  delay(thirty2);
+  tone(speakerPin, 1760, eight); // a6
+  delay(eight);
+  tone(speakerPin, 1568, eight); // g6
+  delay(eight);
+  tone(speakerPin, 1396, eight); // f6
+  delay(eight);
+  tone(speakerPin, 1760, eight); // a6
+  delay(eight);
+  tone(speakerPin, 1568, half);
+  delay(half);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
+}
 
 void setup() {
 
-  pinMode(speaker,OUTPUT);
-
+  pinMode(speakerPin,OUTPUT);
+ digitalWrite(speakerPin, triggerMode ? HIGH : LOW); 
+lcd.begin(16, 2);
+  delay(100);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("*  HELICOPTER  *");
+  lcd.setCursor(0, 1);
+  lcd.print(" Get the Bricks");
+  delay(500);
+  song();
+  delay(500);
+ 
   read_button();
   
   // Seed the random number generator using noise from analog 0
@@ -298,7 +346,10 @@ void game_play(boolean update) {
     if (mask_heli & (button_state ? walls_bot : walls_top)) {
       lcd.write(SPRITE_EXPL);
       lcd.write(SPRITE_EXPL);
-      tone(speaker,329, 100);
+      tone(speakerPin,329, 100);
+      delay(100);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
       boolean ramp = false;
       unsigned long curr = millis(), prev = curr, next = curr + death_rate;
       unsigned long death_stop = millis() + death_hold;
@@ -340,10 +391,15 @@ void game_over(boolean update) {
   if (first) {
     first = false;
     lcd.clear();  
+    lcd.setCursor(0, 0);
+    lcd.print("   Game Over    ");
+
+    song();
   }
 
   read_button();
   if (!button_state) {
+    
     set_game_mode(0);
   }
 
@@ -354,7 +410,11 @@ void game_over(boolean update) {
     lcd.setCursor(0, 1);
     lcd.print("Score: ");
     lcd.print(score);
+
+  
+ 
   }
+
 }
 
 // Change the game mode and reset some state information
@@ -400,4 +460,3 @@ void read_button() {
     button_state = (analogRead(A0) > 1000);
   }
 }
-
