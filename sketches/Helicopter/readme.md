@@ -47,7 +47,7 @@ This project is licensed under the [Creative Commons Attribution-ShareAlike 3.0 
 ## Links
 
 - [Original Game by Kevin Loney](https://makezine.com/2013/03/11/arduino-helicopter-game-2/)
-- [YouTube Channel](https://www.youtube.com/channel/UCXXXXXXXXXXXXXXX)
+- [YouTube Channel](https://www.youtube.com/@KONTAKTS)
 - [Website](http://www.kontakts.ru)
 
 ## Acknowledgements
