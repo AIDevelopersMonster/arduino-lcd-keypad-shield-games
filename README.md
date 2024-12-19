@@ -20,19 +20,19 @@ The links to the original projects are included below.
 ## 2. [DinosaurGame](sketches/DinosaurGame/)
 * Author: Erbol Syzdyk
 * URL:
-* My test: https://youtube.com/shorts/m07JnKcBQ5A
+* My test video: https://youtube.com/shorts/m07JnKcBQ5A
 
 ## 3. [Hangmanduino](sketches/Hangman/)
 * Author: Dan Wagoner
 * URL: [http://www.nerdybynature.com/2009/08/31/hangmanduino/](http://www.nerdybynature.com/2009/08/31/hangmanduino/)
 * Youtube: [https://www.youtube.com/watch?v=hCa8F8fbHLQ](https://www.youtube.com/watch?v=hCa8F8fbHLQ)
-* My test: https://youtube.com/shorts/YiJEr99PN4Q
+* My test video: https://youtube.com/shorts/YiJEr99PN4Q
 
 ## 4. [Helicopter](sketches/Helicopter/)
 * Author: Kevin Loney
 * URL: [https://makezine.com/2013/03/11/arduino-helicopter-game-2/](https://makezine.com/2013/03/11/arduino-helicopter-game-2/)
 * Youtube: [https://www.youtube.com/watch?v=Lmb0OcObO5A](https://www.youtube.com/watch?v=Lmb0OcObO5A)
-
+* My test video: https://www.youtube.com/shorts/hVHkjJM4h28
 
 ## 5. [Hunt The Wumpus](sketches/HuntTheWumpus/)
 * Author: @dmalec
