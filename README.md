@@ -37,7 +37,7 @@ The links to the original projects are included below.
 ## 5. [Hunt The Wumpus](sketches/HuntTheWumpus/)
 * Author: @dmalec
 * URL: [https://github.com/dmalec/Hunt-The-Wumpus](https://github.com/dmalec/Hunt-The-Wumpus)
-* Youtube:
+* MyTest: https://youtu.be/42TK8sLL1Xs
 
 
 ## 6. [Jump](sketches/Jump/)
