@@ -20,7 +20,6 @@ The links to the original projects are included below.
 ## 2. [DinosaurGame](sketches/DinosaurGame/)
 * Author: Erbol Syzdyk
 * URL:
-* Youtube: https://youtube.com/shorts/m07JnKcBQ5A
 * My test: https://youtube.com/shorts/m07JnKcBQ5A
 
 ## 3. [Hangmanduino](sketches/Hangman/)
