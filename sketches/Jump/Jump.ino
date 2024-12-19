@@ -1,7 +1,32 @@
-/*  Slightly modified to work with the LCD Keypad Shield.
- *  Original - http://www.instructables.com/id/Arduino-LCD-Game/
+/*
+ * Обновленная версия игры на Arduino с LCD дисплеем.
+ * Оригинальный автор: Joshua Brooks
+ * Оригинальный проект: http://www.instructables.com/id/Arduino-LCD-Game/
+ * Видео с оригиналом: https://www.youtube.com/watch?v=LVPSwgAacac
+ * Наш GitHub: https://github.com/AIDevelopersMonster
+ *
+ * В этой версии игры мы улучшили графику, анимацию и управление с использованием LCD Keypad Shield.
+ * Теперь герой может бегать, прыгать и избегать препятствий, а также выводится экран "Game Over" с итоговым счетом.
+ * Добавлены звуковые эффекты для улучшения игрового опыта.
+ * Игра демонстрирует динамичное изменение ландшафта и случайную генерацию препятствий.
+ *
+ * Оборудование:
+ *  - Arduino (например, Arduino Uno или аналог)
+ *  - LCD Keypad Shield (экран и кнопки для управления)
+ *  - Динамик для звуковых эффектов
+ *
+ * Игра подходит для начинающих разработчиков и позволяет изучить основы работы с LCD дисплеем, кнопками и звуковыми эффектами на Arduino.
+ *
+ * Установка:
+ *  1. Подключите LCD Keypad Shield и динамик к вашей Arduino.
+ *  2. Загрузите код с нашего GitHub репозитория.
+ *  3. Настройте кнопки и запускайте игру!
+ *  
+ * Наслаждайтесь игрой и не забудьте поделиться своими результатами!
  */
+
 #include <LiquidCrystal.h>
+#include <avr/wdt.h>
 
 #define SPRITE_RUN1 1
 #define SPRITE_RUN2 2
@@ -42,7 +67,16 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 static char terrainUpper[TERRAIN_WIDTH + 1];
 static char terrainLower[TERRAIN_WIDTH + 1];
 static bool buttonPushed = false;
-static int melodyPin = 3;
+static int speakerPin = 3;
+bool triggerMode = true;  // false - High Trigger(npn), true - Low Trigger(pnp)
+// Constants for music timing
+int bpm = 30;
+const int whole = (60000 / bpm);
+const int half = 30000 / bpm;
+const int quarter = 15000 / bpm;
+const int eight = 7500 / bpm;
+const int sixteenth = 3750 / bpm;
+const int thirty2 = 1875 / bpm;
 
 void initializeGraphics() {
   static byte graphics[] = {
@@ -221,13 +255,66 @@ bool drawHero(byte position, char* terrainUpper, char* terrainLower, unsigned in
 // Handle the button push as an interrupt
 void buttonPush() {
   buttonPushed = true;
+
+}
+// Play song (used for winning and some actions)
+void arkanoidsong() {
+  tone(speakerPin, 1568, eight); // g6
+  delay(eight);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
+  delay(sixteenth);
+  tone(speakerPin, 1568, sixteenth); // g6
+  delay(sixteenth);
+  tone(speakerPin, 1864, half); // a#6
+  delay(half);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
+  delay(thirty2);
+  tone(speakerPin, 1760, eight); // a6
+  delay(eight);
+  tone(speakerPin, 1568, eight); // g6
+  delay(eight);
+  tone(speakerPin, 1396, eight); // f6
+  delay(eight);
+  tone(speakerPin, 1760, eight); // a6
+  delay(eight);
+  tone(speakerPin, 1568, half);
+  delay(half);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
 }
 
 void setup() {
-  initializeGraphics();
+digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
   lcd.begin(16, 2);
+  delay(100);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("JUMP");
+  lcd.setCursor(0, 1);
+  lcd.print("Get the Bricks");
+  delay(500);
+  arkanoidsong();
+  delay(500);
+  lcd.setCursor(0, 1);
+  lcd.print("Press to Start");
+  while (analogRead(0) > 1000) {
+    delay(10);
+  }
 }
+void showGameOverScreen(unsigned int score) {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("GAME OVER!");
+  lcd.setCursor(0, 1);
+  lcd.print("Score: ");
+  lcd.print(score);
 
+  delay(2000);  // Ждем 2 секунды, чтобы игрок увидел свой результат
+   wdt_enable(WDTO_15MS);   // Выполнение программного сброса
+  
+}
 void loop() {
   buttonCheck();
   static byte heroPos = HERO_POSITION_RUN_LOWER_1;
@@ -244,7 +331,6 @@ void loop() {
       lcd.print("Press Start");
     }
     delay(250);
-    blink = !blink;
     if (buttonPushed) {
       initializeGraphics();
       heroPos = HERO_POSITION_RUN_LOWER_1;
@@ -277,6 +363,7 @@ void loop() {
 
   if (drawHero(heroPos, terrainUpper, terrainLower, distance >> 3)) {
     playing = false; // The hero collided with something. Too bad.
+    showGameOverScreen(distance >> 3);  // Показываем экран GAME OVER
   } else {
     if (heroPos == HERO_POSITION_RUN_LOWER_2 || heroPos == HERO_POSITION_JUMP_8) {
       heroPos = HERO_POSITION_RUN_LOWER_1;
@@ -293,13 +380,15 @@ void loop() {
   }
   delay(100);
 }
-
 void buttonCheck() {
   int b = analogRead(A0);
   if (b < 850) {
     buttonPushed = true;
+      tone(speakerPin, 1174, thirty2);
+            delay(thirty2);
+            noTone(speakerPin);
+            digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
   }
 }
-
 
 
