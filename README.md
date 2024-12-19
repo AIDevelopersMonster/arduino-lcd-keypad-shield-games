@@ -15,7 +15,7 @@ The links to the original projects are included below.
 * Author: Mason (@profmason)
 * URL: [https://codebender.cc/sketch:209333#DF%20Robot%20LCD%20with%20Keypad.ino](https://codebender.cc/sketch:209333#DF%20Robot%20LCD%20with%20Keypad.ino)
 * Youtube: [https://www.youtube.com/watch?v=mam9-iFeFJk](https://www.youtube.com/watch?v=mam9-iFeFJk)
-* My test: https://youtu.be/6LWPz9LbFmI
+* My test video: https://youtu.be/6LWPz9LbFmI
 
 ## 2. [DinosaurGame](sketches/DinosaurGame/)
 * Author: Erbol Syzdyk
@@ -37,14 +37,14 @@ The links to the original projects are included below.
 ## 5. [Hunt The Wumpus](sketches/HuntTheWumpus/)
 * Author: @dmalec
 * URL: [https://github.com/dmalec/Hunt-The-Wumpus](https://github.com/dmalec/Hunt-The-Wumpus)
-* MyTest: https://youtu.be/42TK8sLL1Xs
+* My test video: https://youtu.be/42TK8sLL1Xs
 
 
 ## 6. [Jump](sketches/Jump/)
 * Author: Joshua Brooks
 * URL: [http://www.instructables.com/id/Arduino-LCD-Game/](http://www.instructables.com/id/Arduino-LCD-Game/)
 * Youtube:[https://www.youtube.com/watch?v=LVPSwgAacac](https://www.youtube.com/watch?v=LVPSwgAacac)
-
+* My test video: https://youtube.com/shorts/fZHu0-122nA
 
 ## 7. [Number Flip-Flop](sketches/NumberFlipFlop/)
 * Author: Budd Churchward (@barnacleBudd)
