@@ -46,7 +46,7 @@
   
 ## Установка
 
-1. Скачайте проект с [GitHub]((https://github.com/AIDevelopersMonster/arduino-lcd-keypad-shield-games/tree/master/sketches/HuntTheWumpus)).
+1. Скачайте проект с [GitHub](https://github.com/AIDevelopersMonster/arduino-lcd-keypad-shield-games/tree/master/sketches/HuntTheWumpus).
 2. Загрузите код в ваш Arduino.
 3. Подключите LCD экран и кнопки согласно схемам, приведенным в проекте.
 
@@ -56,6 +56,6 @@
 
 ## Контакты
 
-- **Автор проекта**: [Ваше имя или никнейм]
-- **GitHub**: [Ссылка на репозиторий GitHub]
+- **Автор проекта**: @dmalec
+- **GitHub**: [[Ссылка на репозиторий GitHub]](https://github.com/dmalec)
 
