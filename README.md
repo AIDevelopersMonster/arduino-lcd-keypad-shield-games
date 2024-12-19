@@ -15,12 +15,13 @@ The links to the original projects are included below.
 * Author: Mason (@profmason)
 * URL: [https://codebender.cc/sketch:209333#DF%20Robot%20LCD%20with%20Keypad.ino](https://codebender.cc/sketch:209333#DF%20Robot%20LCD%20with%20Keypad.ino)
 * Youtube: [https://www.youtube.com/watch?v=mam9-iFeFJk](https://www.youtube.com/watch?v=mam9-iFeFJk)
-
+* My test: https://youtu.be/6LWPz9LbFmI
 
 ## 2. [DinosaurGame](sketches/DinosaurGame/)
 * Author: Erbol Syzdyk
 * URL:
 * Youtube: https://youtube.com/shorts/m07JnKcBQ5A
+* My test: https://youtube.com/shorts/m07JnKcBQ5A
 
 ## 3. [Hangmanduino](sketches/Hangman/)
 * Author: Dan Wagoner
