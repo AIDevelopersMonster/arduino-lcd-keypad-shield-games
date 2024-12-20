@@ -13,24 +13,6 @@
  *  Ghost collision: When Pacman collides with a ghost, a "collision" sound is played.
  *  Movement sound: A short tone is played every time Pacman moves.
  *  Winning or specific actions: A short song (arkanoidsong) is played during the intro or upon certain actions like completing a round.
- *  ound Timing: Constants like whole, half, quarter and others were defined for timing and music control, helping to make the sound effects consistent and easily adjustable based on the beats per minute (bpm).
- */
-
-/*
- *
- *      ____  ___   ________  ______    _   __   ____  ________  __________  __
- *     / __ \/   | / ____/  |/  /   |  / | / /  / __ \/  _/ __ \/ ____/ __ \/ /
- *    / /_/ / /| |/ /   / /|_/ / /| | /  |/ /  / /_/ // // / / / __/ / /_/ / / 
- *   / ____/ ___ / /___/ /  / / ___ |/ /|  /  / _, _// // /_/ / /___/ _, _/_/  
- *  /_/   /_/  |_\____/_/  /_/_/  |_/_/ |_/  /_/ |_/___/_____/_____/_/ |_(_)   
- *
- * Written by Micky Griffiths for the 16x2 LCD and RPi. -- 16 May 2013
- * Ported to Arduino for the Arduino LCD Keypad Shield by Johannes le Roux (@dadecoza) -- 4 Apr 2018
- * Updated to include sound effects by Alex Malachevsky 20/12/2024
- * Heart collection: When Pacman eats a heart, a "tune" sound effect is played.
- *  Ghost collision: When Pacman collides with a ghost, a "collision" sound is played.
- *  Movement sound: A short tone is played every time Pacman moves.
- *  Winning or specific actions: A short song (arkanoidsong) is played during the intro or upon certain actions like completing a round.
  *  Sound Timing: Constants like whole, half, quarter and others were defined for timing and music control, helping to make the sound effects consistent and easily adjustable based on the beats per minute (bpm).
  */
 
