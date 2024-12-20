@@ -1,5 +1,9 @@
-// Pacman game for Arduino
-// Written by: Jean Malha
+// Pacman game for Arduino with LCD Keypad Shield
+// Author: Jean Malha
+// Modifications by Alex Malachevsky: Added sound effects and buzzer functionality
+// GitHub: https://github.com/AIDevelopersMonster/arduino-lcd-keypad-shield-games/tree/master/sketches/Pacman
+// Video demonstration: https://youtube.com/shorts/Z0TSHcleV8Y
+// Features: Pacman movement, ghost chasing, level progression, and point collection with added sound feedback
 
 
 #include <LiquidCrystal.h> // Library for LCD control
