@@ -132,6 +132,10 @@ void gagne() {
 void poursuis() {
   int oldx=xfant;
   int oldy=yfant;
+      tone(speakerPin, 1174, thirty2);
+            delay(thirty2);
+            noTone(speakerPin);
+            digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
   if (yfant<ypac) yfant=yfant+1;
   else if (yfant>ypac) yfant=yfant-1;
   else if (xfant<xpac) xfant=xfant+1;
@@ -141,7 +145,8 @@ void poursuis() {
   lcd.setCursor(oldx,oldy); 
   if ((oldx!=xfant)||(oldy!=yfant)) {
     if (points[oldx][oldy]) lcd.write(2); 
-    else lcd.print(" "); 
+    else lcd.print(" ");
+     
   }
 }
 
@@ -195,7 +200,7 @@ void setup() {
   lcd.createChar(1, fantome);
   lcd.createChar(2, point);
   lcd.setCursor(0, 0); 
-  lcd.print("        PACMAN"); 
+  lcd.print("     PACMAN"); 
     arkanoidsong();
   delay(5000); 
   initLevel();
