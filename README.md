@@ -59,9 +59,8 @@ The links to the original projects are included below.
 
 ## 9. [PACMAN RIDER!](sketches/PacmanRider/)
 * Author: Micky Griffiths
-* URL:
 * Youtube: [https://www.youtube.com/watch?v=JapKr4s1tVY](https://www.youtube.com/watch?v=JapKr4s1tVY)
-
+*  My test video: https://youtube.com/shorts/Z5uP4PK7cYg
 
 ## 10. [Poseur Blocks](sketches/PoseurBlocks/)
 * Author: Alex Zen (@alexzen)
