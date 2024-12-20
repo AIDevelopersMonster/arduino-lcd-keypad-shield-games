@@ -1,4 +1,4 @@
-/*                                                                
+/*
  *
  *      ____  ___   ________  ______    _   __   ____  ________  __________  __
  *     / __ \/   | / ____/  |/  /   |  / | / /  / __ \/  _/ __ \/ ____/ __ \/ /
@@ -8,15 +8,29 @@
  *
  * Written by Micky Griffiths for the 16x2 LCD and RPi. -- 16 May 2013
  * Ported to Arduino for the Arduino LCD Keypad Shield by Johannes le Roux (@dadecoza) -- 4 Apr 2018
- * 
- * 
-*/
-
+ * Updated to include sound effects by Alex Malachevsky 20/12/2024
+ * Heart collection: When Pacman eats a heart, a "tune" sound effect is played.
+ *  Ghost collision: When Pacman collides with a ghost, a "collision" sound is played.
+ *  Movement sound: A short tone is played every time Pacman moves.
+ *  Winning or specific actions: A short song (arkanoidsong) is played during the intro or upon certain actions like completing a round.
+ *  ound Timing: Constants like whole, half, quarter and others were defined for timing and music control, helping to make the sound effects consistent and easily adjustable based on the beats per minute (bpm).
+ */
 
 #include <LiquidCrystal.h>
 #include <EEPROM.h>
 
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
+
+static const int BUZZER_PIN = 3; // Пин для пьезодинамика
+bool triggerMode = true;  // false - High Trigger(npn), true - Low Trigger(pnp)
+// Constants for music timing
+int bpm = 30;
+const int whole = (60000 / bpm);
+const int half = 30000 / bpm;
+const int quarter = 15000 / bpm;
+const int eight = 7500 / bpm;
+const int sixteenth = 3750 / bpm;
+const int thirty2 = 1875 / bpm;
 
 
 static const int SPRITE_PACMAN_OPEN = 0;
@@ -57,9 +71,37 @@ static const byte spriteBitmaps[8][8] = {
   {0x0, 0x0, 0x0, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F},
   {0x1F, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
 };
-
-
+// Play song (used for winning and some actions)
+void arkanoidsong() {
+  tone(BUZZER_PIN, 1568, eight); // g6
+  delay(eight);
+  noTone(BUZZER_PIN);
+  digitalWrite(BUZZER_PIN, triggerMode ? HIGH : LOW);  
+  delay(sixteenth);
+  tone(BUZZER_PIN, 1568, sixteenth); // g6
+  delay(sixteenth);
+  tone(BUZZER_PIN, 1864, half); // a#6
+  delay(half);
+  noTone(BUZZER_PIN);
+  digitalWrite(BUZZER_PIN, triggerMode ? HIGH : LOW);  
+  delay(thirty2);
+  tone(BUZZER_PIN, 1760, eight); // a6
+  delay(eight);
+  tone(BUZZER_PIN, 1568, eight); // g6
+  delay(eight);
+  tone(BUZZER_PIN, 1396, eight); // f6
+  delay(eight);
+  tone(BUZZER_PIN, 1760, eight); // a6
+  delay(eight);
+  tone(BUZZER_PIN, 1568, half);
+  delay(half);
+  noTone(BUZZER_PIN);
+  digitalWrite(BUZZER_PIN, triggerMode ? HIGH : LOW);  
+}
 void setup() {
+  pinMode(BUZZER_PIN, OUTPUT); // Настройка пина для пьезодинамика
+  digitalWrite(BUZZER_PIN, triggerMode ? HIGH : LOW); 
+   
   if (checkButton()) {
     EEPROM.write(HIGHSCORE_ADDRESS, 0);
   }
@@ -75,7 +117,6 @@ void setup() {
   initVars();
 }
 
-
 void loop() {
   switch (state) {
     case STATE_INTRO: intro(); break;
@@ -83,7 +124,6 @@ void loop() {
     case STATE_GAMEOVER: gameover(); break;
   }
 }
-
 
 void initVars() {
   for (int i = 0; i < MAX_SPRITES; i++) {
@@ -101,10 +141,9 @@ void initVars() {
   mouthState = false;
   smile = false;
 }
-
-
 void intro() {
   lcd.clear(); lcd.setCursor(3, 0); lcd.print("WELCOME TO"); lcd.setCursor(1, 1); lcd.print("MICKY'S ARCADE");
+  arkanoidsong();
   waitButton();
   lcd.clear(); lcd.setCursor(2, 0); lcd.print("IT'S SIMPLE!");
   waitButton();
@@ -119,7 +158,6 @@ void intro() {
   animation(1);
   state = STATE_PLAY;
 }
-
 
 void play() {
   drawScreen();
@@ -144,12 +182,17 @@ void play() {
   if (c == TYPE_HEART) {
     eatHeart();
     increaseScore();
+    tone(BUZZER_PIN, 1000, 200); // Звук при сборе сердечка
+    noTone(BUZZER_PIN); // Отключить звук
+    digitalWrite(BUZZER_PIN, triggerMode ? HIGH : LOW);  
   } else if (c == TYPE_GHOST) {
+    tone(BUZZER_PIN, 200, 500); // Звук при столкновении с призраком
+    delay(500); // Ждём завершения звука
+    noTone(BUZZER_PIN); // Отключить звук
+    digitalWrite(BUZZER_PIN, triggerMode ? HIGH : LOW);  
     state = STATE_GAMEOVER;
   }
 }
-
-
 void gameover() {
   animation(0);
   lcd.setCursor(3, 0); lcd.print("GAME OVER"); lcd.setCursor(0, 1); lcd.print("How did you do?");
@@ -177,7 +220,6 @@ void drawScreen() {
   drawPacman();
 }
 
-
 void eatHeart() {
   for (int i = 0; i < MAX_SPRITES; i++) {
     if (sprites[i].x == pacmanX && sprites[i].y == pacmanY && sprites[i].type == TYPE_HEART) {
@@ -187,8 +229,6 @@ void eatHeart() {
     }
   }
 }
-
-
 void increaseScore() {
   score++;
   if (!(score % 10)) {
@@ -198,8 +238,6 @@ void increaseScore() {
     }
   }
 }
-
-
 void spawn(int type) {
   int x = 15;
   int y = random(0, 2);
@@ -245,18 +283,18 @@ int okayToSpawnHeart(int pos) {
   }
   return 1;
 }
-
-
 void moveLeft() {
   for (int i = 0; i < MAX_SPRITES; i++) {
     if (sprites[i].type != TYPE_NONE) {
       int x = sprites[i].x - 1;
       int y = sprites[i].y;
       moveSprite(i, x, y);
+      tone(BUZZER_PIN, 600, 50); // Звук движения
     }
   }
+  noTone(BUZZER_PIN); // Отключить звук
+  digitalWrite(BUZZER_PIN, triggerMode ? HIGH : LOW);  
 }
-
 
 void createSprite(int s, int x, int y, int type) {
   sprites[s].x = x;
@@ -375,5 +413,6 @@ int checkButton() {
 void waitButton() {
   while (!checkButton()) delay(50);
 }
+
 
 
