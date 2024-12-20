@@ -1,18 +1,25 @@
-//Pacman
-//Written By: Jean Malha
-//http://forum.snootlab.com/viewtopic.php?f=34&t=207
-//
-
-//#include "Wire.h" // insertion de la librairie I2C (obligatoire)
-//#include <Deuligne.h> // insertion de la librairie Deuligne (obligatoire)
-#include <LiquidCrystal.h>
+// Pacman game for Arduino
+// Written by: Jean Malha
 
 
-#define VITESSE_PAC 150
-#define VITESSE_FANT 2000
-#define MAXX 15
-#define MAXY 1
+#include <LiquidCrystal.h> // Library for LCD control
 
+// Game parameters
+#define VITESSE_PAC 150  // Pacman movement speed in ms / Скорость движения Пакмана (мс)
+#define VITESSE_FANT 2000 // Ghost movement speed in ms / Скорость движения призрака (мс)
+#define MAXX 15          // Maximum X coordinate / Максимальная координата X
+#define MAXY 1           // Maximum Y coordinate / Максимальная координата Y
+static int speakerPin = 3;
+bool triggerMode = true;  // false - High Trigger(npn), true - Low Trigger(pnp)
+// Constants for music timing
+int bpm = 30;
+const int whole = (60000 / bpm);
+const int half = 30000 / bpm;
+const int quarter = 15000 / bpm;
+const int eight = 7500 / bpm;
+const int sixteenth = 3750 / bpm;
+const int thirty2 = 1875 / bpm;
+// Button definitions / Определение кнопок
 #define btnRight     0
 #define btnUp        1
 #define btnDown      2
@@ -20,14 +27,11 @@
 #define btnSelect    4
 #define btnNone      5
 
-void(* resetFunc) (void) = 0;
-LiquidCrystal lcd(8, 9, 4, 5, 6, 7); 
+void(* resetFunc) (void) = 0; // Reset function / Функция сброса
 
+LiquidCrystal lcd(8, 9, 4, 5, 6, 7); // LCD pin configuration / Подключение ЖК-дисплея
 
-//Deuligne lcd; // Déclaration de l'objet lcd
-
-
-// Charactère spécifique pacman
+// Custom characters for Pacman and ghost / Специальные символы для Пакмана и призрака
 byte pacman[8] = {
   B00000,
   B00000,
@@ -39,7 +43,6 @@ byte pacman[8] = {
   B00000
 };
 
-// Charactère spécifique fantome
 byte fantome[8] = {
   B00000,
   B00000,
@@ -51,7 +54,7 @@ byte fantome[8] = {
   B00000
 };
 
-byte point[8] = {
+byte point[8] = { // Points to eat / Точки для поедания
   B00000,
   B00000,
   B00000,
@@ -62,47 +65,49 @@ byte point[8] = {
   B00000
 };
 
-// Tableau des points à manger
+// Board to track points / Поле для отслеживания точек
 byte points[MAXX+1][MAXY+1];
 
-int xpac=2; // Position de pacman en X (colone)
-int ypac=1; //position de pacmanen y (ligne)
-int xfant=15;// Position du fantome en X (colone)
-int yfant=0;// Position du fantome en Y (ligne)
-byte light=true; //Eclairage
-long keystruck=0; //dernier appui sur un bouton
-long poursuite=0; //dernier movement du fantome
-byte partieEnCours=true; // pour eviter de boucler sur la fin
-byte vide=false; // pour tester si tout est manger
+// Game state variables / Переменные состояния игры
+int xpac=2;  // Pacman's X position / Позиция Пакмана по X
+int ypac=1;  // Pacman's Y position / Позиция Пакмана по Y
+int xfant=15;// Ghost's X position / Позиция призрака по X
+int yfant=0; // Ghost's Y position / Позиция призрака по Y
+byte light=true; // Backlight state / Состояние подсветки
+long keystruck=0; // Last button press time / Время последнего нажатия кнопки
+long poursuite=0; // Last ghost movement / Время последнего движения призрака
+byte partieEnCours=true; // Game running flag / Флаг текущей игры
+byte vide=false; // Check if all points eaten / Проверка, все ли точки съедены
 
-byte level=0; // niveau
-int score=0; // niveau
+byte level=0; // Current level / Текущий уровень
+int score=0;  // Current score / Текущий счет
 
-void bouge(int x,int y) // fonction pour bouger pacman
-{
+// Function to move Pacman / Функция для перемещения Пакмана
+void bouge(int x, int y) {
   int oldx=xpac;
   int oldy=ypac;
-  if (((xpac+x)>=0)&((xpac+x)<=MAXX)) xpac=xpac+x; //Si pas sorti d'ecran, on change x
-  if (((ypac+y)>=0)&((ypac+y)<=MAXY)) ypac=ypac+y;//Si pas sorti d'ecran, on change y
-  lcd.setCursor(xpac,ypac); // On se place en nouvelle position
-  lcd.write(byte(0)); // et on pose le caractere 0 (Pacman)
-  lcd.setCursor(oldx,oldy); // On se place en ancienne position
-  if ((xpac!=oldx)||(ypac!=oldy)) lcd.print(" "); // et on efface Pacman (s'il a bougé)
+  if (((xpac+x)>=0)&((xpac+x)<=MAXX)) xpac=xpac+x; // Move if within bounds / Движение, если в пределах экрана
+  if (((ypac+y)>=0)&((ypac+y)<=MAXY)) ypac=ypac+y; // Move if within bounds / Движение, если в пределах экрана
+  lcd.setCursor(xpac,ypac); 
+  lcd.write(byte(0)); // Draw Pacman / Отрисовка Пакмана
+  lcd.setCursor(oldx,oldy); 
+  if ((xpac!=oldx)||(ypac!=oldy)) lcd.print(" "); // Clear old position / Очистка старой позиции
   if(points[xpac][ypac]){
-    points[xpac][ypac]=false; // mange le truc
+    points[xpac][ypac]=false; // Eat point / Поедание точки
     score++;
   }
   vide=true;
   for (int i=0; i<=MAXX; i=i+1)
     for (int j=0; j<=MAXY; j=j+1)
-      if (points[i][j])  vide=false;
+      if (points[i][j]) vide=false;
   if ((vide)&&(partieEnCours)) gagne();
 }
 
-void perdu(){
-  lcd.setCursor(0, 0); // on se place au point 0,0 (1ere ligne, 1er caractere)
-  lcd.print("***Game Over****"); // on écrit le début du texte de début
-  lcd.setCursor(0, 1); // on se place au point 0,1 (2eme ligne, 1er caractere)
+// Function called when player loses / Функция при проигрыше
+void perdu() {
+  lcd.setCursor(0, 0); 
+  lcd.print("***Game Over****"); 
+  lcd.setCursor(0, 1); 
   lcd.print("***");
   lcd.print(score);
   lcd.print("***"); 
@@ -110,72 +115,96 @@ void perdu(){
   resetFunc();
 }
 
-void gagne()
-{
+// Function called when player wins / Функция при победе
+void gagne() {
   level++;
-  lcd.setCursor(0, 0); // on se place au point 0,0 (1ere ligne, 1er caractere)
-  lcd.print("*** Next level ***"); // on écrit le début du texte de début
-  lcd.setCursor(0, 1); // on se place au point 0,0 (1ere ligne, 1er caractere)
+  lcd.setCursor(0, 0); 
+  lcd.print("*** Next level ***"); 
+  lcd.setCursor(0, 1); 
   lcd.print("*** ");
   lcd.print(level,DEC);
-  lcd.print(" ***"); // on écrit le début du texte de début
-  delay(2000); // 2 secondes de pause
-  initLevel(); //reinitialisation du tableau
+  lcd.print(" ***"); 
+  delay(2000); 
+  initLevel(); // Reset level / Сброс уровня
 }
 
-void poursuis() // fonction pour bouger fantome
-{
+// Function to move the ghost / Функция для движения призрака
+void poursuis() {
   int oldx=xfant;
   int oldy=yfant;
   if (yfant<ypac) yfant=yfant+1;
   else if (yfant>ypac) yfant=yfant-1;
   else if (xfant<xpac) xfant=xfant+1;
   else if (xfant>xpac) xfant=xfant-1;
-  lcd.setCursor(xfant,yfant); // On se place en nouvelle position
-  lcd.write(1); // et on pose le caractere 0 (Fantome)
-  lcd.setCursor(oldx,oldy); // On se place en ancienne position
-  if ((oldx!=xfant)||(oldy!=yfant)) // et on efface Fantome (s'il a bougé)
-  {
-    if (points[oldx][oldy]) lcd.write(2); // remplacé par un point si pas mangé
-    else lcd.print(" "); // remplacé par un espace si déja magé
+  lcd.setCursor(xfant,yfant); 
+  lcd.write(1); 
+  lcd.setCursor(oldx,oldy); 
+  if ((oldx!=xfant)||(oldy!=yfant)) {
+    if (points[oldx][oldy]) lcd.write(2); 
+    else lcd.print(" "); 
   }
 }
 
-//initialisation du tableau 
-void initLevel(){
+// Level initialization / Инициализация уровня
+void initLevel() {
   for (int i=0; i<=MAXX; i=i+1)
-    for (int j=0; j<=MAXY; j=j+1){
-      points[i][j]=true; //initialisation du tableau des trucs à manger
-      lcd.setCursor(i-1, j-1); // on se place au point j,i 
-      lcd.write(2); // on écrit les points
+    for (int j=0; j<=MAXY; j=j+1) {
+      points[i][j]=true; 
+      lcd.setCursor(i-1, j-1); 
+      lcd.write(2); 
     }
-  lcd.setCursor(xpac,ypac); // On se place en position de départ de pacman
-  lcd.write(byte(0)); // et on pose le caractere 0 (Pacman)
-  lcd.setCursor(xfant,yfant); // On se place en position de départ du fantome
-  lcd.write(1); // et on pose le caractere 1 (fantome)
-  poursuite=millis(); // On initialise le timer de poursuite (pour eviter un mouvement immédiat)
+  lcd.setCursor(xpac,ypac); 
+  lcd.write(byte(0)); 
+  lcd.setCursor(xfant,yfant); 
+  lcd.write(1); 
+  poursuite=millis(); 
   vide=false;
 }
-
+// Play song (used for winning and some actions)
+void arkanoidsong() {
+  tone(speakerPin, 1568, eight); // g6
+  delay(eight);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
+  delay(sixteenth);
+  tone(speakerPin, 1568, sixteenth); // g6
+  delay(sixteenth);
+  tone(speakerPin, 1864, half); // a#6
+  delay(half);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
+  delay(thirty2);
+  tone(speakerPin, 1760, eight); // a6
+  delay(eight);
+  tone(speakerPin, 1568, eight); // g6
+  delay(eight);
+  tone(speakerPin, 1396, eight); // f6
+  delay(eight);
+  tone(speakerPin, 1760, eight); // a6
+  delay(eight);
+  tone(speakerPin, 1568, half);
+  delay(half);
+  noTone(speakerPin);
+  digitalWrite(speakerPin, triggerMode ? HIGH : LOW);  
+}
+// Setup function / Функция настройки
 void setup() {
   Serial.begin(9600);
-  //Wire.begin(); // initialisation I2C (obligatoire)
-  //lcd.init(); // initialisation LCD (obligatoire)
   lcd.begin(16, 2);
-  lcd.createChar(0, pacman); // creation du caractere pacman et affectation au numéro 0
-  lcd.createChar(1, fantome); // creation du caractere de fantome et affectation au numéro 1
-  lcd.createChar(2, point); // creation du caractere de point et affectation au numéro 2
-  //lcd.backLight(true); // on allume le retro eclairage
-  lcd.setCursor(0, 0); // on se place au point 0,0 (1ere ligne, 1er caractere)
-  lcd.print("Pacman!"); // on écrit le début du texte de début
-  delay (5000); // Splash screen
-  initLevel(); // initialisation du tableau
+  lcd.createChar(0, pacman);
+  lcd.createChar(1, fantome);
+  lcd.createChar(2, point);
+  lcd.setCursor(0, 0); 
+  lcd.print("        PACMAN"); 
+    arkanoidsong();
+  delay(5000); 
+  initLevel();
 }
 
+// Main game loop / Главный игровой цикл
 void loop() {
   int thisChar = Serial.read();
-  switch (thisChar)
-  {
+  switch (thisChar) {
   case 'r':
     lcd.scrollDisplayRight();
     break;
@@ -183,62 +212,41 @@ void loop() {
     lcd.scrollDisplayLeft();
     break;
   }
-  if ((thisChar>'a')&(thisChar<'z'))
-  {
-    lcd.setCursor(1,1);
-    lcd.write(thisChar);
-  }
-  if (millis()-keystruck>VITESSE_PAC) // Si plus de 200ms depuis le dernier mouvement de joystick
-  {
+  if (millis()-keystruck>VITESSE_PAC) {
     int joy=getKey();
-    switch (joy)
-    {
+    switch (joy) {
     case btnNone:
       break;
     case btnLeft:
-      Serial.print("Pacman bouge à gauche.\n"); // envoi de controle sur liaison série
-      Serial.print(keystruck);
-      bouge(-1,0);// déplacement
-      keystruck=millis(); // remise à zero du timer de mouvement
+      bouge(-1,0);
+      keystruck=millis();
       break;
     case btnRight:
-      Serial.print("Pacman bouge à droite\n");// envoi de controle sur liaison série
-      bouge(1,0);// déplacement
-      keystruck=millis(); // remise à zero du timer de mouvement
+      bouge(1,0);
+      keystruck=millis();
       break;
     case btnUp:
-      Serial.print("Pacman bouge en haut\n");// envoi de controle sur liaison série
-      bouge(0,-1);// déplacement
-      keystruck=millis(); // remise à zero du timer de mouvement
+      bouge(0,-1);
+      keystruck=millis();
       break;
     case btnDown:
-      Serial.print("Pacman bouge en bas\n");
-      bouge(0,1);// déplacement
-      keystruck=millis(); // remise à zero du timer de mouvement
+      bouge(0,1);
+      keystruck=millis();
       break;
-      /*case 4:
-       Serial.print("centre\n");
-       light=!light; //On inverse le statut d'allumage
-       lcd.backLight(light); // on applique
-       keystruck=millis(); // remise à zero du timer de mouvement
-       break;*/
     default:
-      Serial.print(joy); //au cas ou...
-      keystruck=millis(); // remise à zero du timer de mouvement
-    }; 
-  };
-  if (millis()-poursuite>VITESSE_FANT/(level+1)+10)
-  {
+      keystruck=millis();
+    }
+  }
+  if (millis()-poursuite>VITESSE_FANT/(level+1)+10) {
     poursuis();
     poursuite=millis();
   }
-  if ((xpac==xfant)&&(ypac==yfant)&&(partieEnCours)) 
-  {
+  if ((xpac==xfant)&&(ypac==yfant)&&(partieEnCours)) {
     perdu();
   }
 }
 
-
+// Function to read input from joystick / Функция для считывания ввода с джойстика
 int getKey() {
   int b = analogRead(A0);
   if (b > 1000) return btnNone;
@@ -249,5 +257,3 @@ int getKey() {
   if (b < 520) return btnLeft;
   if (b < 700) return btnSelect;
 }
-
-
