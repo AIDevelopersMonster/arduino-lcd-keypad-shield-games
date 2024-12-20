@@ -54,8 +54,7 @@ The links to the original projects are included below.
 
 ## 8. [Pac-Man](sketches/Pacman/)
 * Author: Jean Malha
-* URL: 
-* Youtube: 
+*  My test video: https://youtube.com/shorts/Z0TSHcleV8Y
 
 
 ## 9. [PACMAN RIDER!](sketches/PacmanRider/)
