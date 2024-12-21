@@ -77,7 +77,7 @@ The links to the original projects are included below.
 * Author: @Numeric
 * URL: [https://hackaday.io/project/10761-tetris-on-arduino-lcd](https://hackaday.io/project/10761-tetris-on-arduino-lcd)
 * Youtube: [https://www.youtube.com/watch?v=YTdxdu47js0](https://www.youtube.com/watch?v=YTdxdu47js0)
-
+* My test video: https://youtube.com/shorts/uaLgrTGczTU
 
 ## 13. [The Lonely Cottage](sketches/Cottage/)
 * Author: Wayne Jones (@WarmCat)
