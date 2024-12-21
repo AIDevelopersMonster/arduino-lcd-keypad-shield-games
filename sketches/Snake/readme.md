@@ -79,16 +79,6 @@ This is a simple implementation of the classic "Snake" game for Arduino, using a
 
 ---
 
-## Game Screenshots
-
-### Game Start
-![Game Start](https://yourimageurl.com/start_screen.png)
-
-### Gameplay
-![Gameplay](https://yourimageurl.com/gameplay.png)
-
-### Game Over
-![Game Over](https://yourimageurl.com/game_over.png)
 
 ---
 
