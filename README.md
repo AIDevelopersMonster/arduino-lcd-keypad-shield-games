@@ -70,9 +70,8 @@ The links to the original projects are included below.
 
 ## 11. [Snake](sketches/Snake/) 
 * Author: @boti12bot
-* URL: [https://www.youtube.com/watch?v=IkTK6WMlMs4](https://www.youtube.com/watch?v=IkTK6WMlMs4)
 * Youtube: [https://www.youtube.com/watch?v=IkTK6WMlMs4](https://www.youtube.com/watch?v=IkTK6WMlMs4)
-
+* My test video: https://youtube.com/shorts/-ZUUv8JKncw
 
 ## 12. [Tetris](sketches/Tetris/)
 * Author: @Numeric
@@ -88,7 +87,6 @@ The links to the original projects are included below.
 
 ## 14. [Tromino](sketches/Tromino/)
 * Author: Johannes le Roux (@dadecoza)
-* URL: 
 * Youtube: [https://youtu.be/O69huEK0YT4?t=448](https://youtu.be/O69huEK0YT4)
 
 
