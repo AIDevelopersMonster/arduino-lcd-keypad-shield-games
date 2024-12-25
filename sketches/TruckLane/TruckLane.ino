@@ -257,4 +257,3 @@ int getKey() {
   if (b < 520) return btnLeft;
   if (b < 700) return btnSelect;
 }
-
