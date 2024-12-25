@@ -94,7 +94,7 @@ The links to the original projects are included below.
 * Author: @TheRealDod
 * URL: [http://www.instructables.com/id/Truck-Lane-a-16x2-LCD-Arduino-game/](http://www.instructables.com/id/Truck-Lane-a-16x2-LCD-Arduino-game/)
 * Youtube: [https://www.youtube.com/watch?v=N4ZchEWr8_s](https://www.youtube.com/watch?v=N4ZchEWr8_s)
-
+* My test video: https://youtube.com/shorts/xTEcgATALvA
 
 ## 16. [Vroum!](sketches/Vroum/)
 * Author: Pierre Massat
