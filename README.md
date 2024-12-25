@@ -100,7 +100,7 @@ The links to the original projects are included below.
 * Author: Pierre Massat
 * URL:  [https://guitarextended.wordpress.com/2013/01/19/sketch-of-the-arduino-lcd-video-game-voitures/](https://guitarextended.wordpress.com/2013/01/19/sketch-of-the-arduino-lcd-video-game-voitures/)
 * Youtube: [https://www.youtube.com/watch?v=-sYp-wQ_Rtg](https://www.youtube.com/watch?v=-sYp-wQ_Rtg)
-
+* My test video: https://youtube.com/shorts/DlqgPFNaDUo
 
 ## 17. [Zombie](sketches/Zombie/)
 * Author:  Markus Ulfberg
