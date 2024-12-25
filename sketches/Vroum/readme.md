@@ -72,9 +72,9 @@
    ```bash
    git clone https://github.com/yourusername/vroum-arduino-game.git
    ```
-[Vroum! Demo](https://img.youtube.com/vi/shorts/xTEcgATALvA/0.jpg)
 
-[Смотреть демо на YouTube](https://youtube.com/shorts/xTEcgATALvA)
+
+[Смотреть демо на YouTube](https://youtube.com/shorts/DlqgPFNaDUo))
 
 2. **Откройте проект** в Arduino IDE.
 
