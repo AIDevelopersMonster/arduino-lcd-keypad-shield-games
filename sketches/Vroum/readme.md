@@ -1,9 +1,6 @@
 ```markdown
 # 🚗 **Vroum!** – Захватывающая Автомобильная Игра для Arduino 🏁
 
-![Vroum! Demo](https://img.youtube.com/vi/xTEcgATALvA/0.jpg)
-
-[Смотреть демо на YouTube](https://youtube.com/shorts/xTEcgATALvA)
 
 ---
 
@@ -75,6 +72,9 @@
    ```bash
    git clone https://github.com/yourusername/vroum-arduino-game.git
    ```
+![Vroum! Demo](https://img.youtube.com/vi/xTEcgATALvA/0.jpg)
+
+[Смотреть демо на YouTube](https://youtube.com/shorts/xTEcgATALvA)
 
 2. **Откройте проект** в Arduino IDE.
 
