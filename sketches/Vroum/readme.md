@@ -70,11 +70,9 @@
 
 1. **Скачайте репозиторий**:
    ```bash
-   git clone https://github.com/yourusername/vroum-arduino-game.git
+   git clone https://github.com/AIDevelopersMonster/arduino-lcd-keypad-shield-games.git
    ```
-
-
-[Смотреть демо на YouTube](https://youtube.com/shorts/DlqgPFNaDUo))
+[Смотреть демо на YouTube](https://youtube.com/shorts/DlqgPFNaDUo)
 
 2. **Откройте проект** в Arduino IDE.
 
